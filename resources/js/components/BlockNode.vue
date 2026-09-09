@@ -40,18 +40,20 @@
                 @update:model-value="reorderChildren"
             >
                 <template #default="{ items }">
-                    <BlockNode
-                        v-for="child in items"
-                        :key="child.id"
-                        :node="child"
-                        :depth="depth + 1"
-                        :block-types="blockTypes"
-                        :selected-id="selectedId"
-                        @select="$emit('select', $event)"
-                        @remove="$emit('remove', $event)"
-                        @duplicate="$emit('duplicate', $event)"
-                        @add="$emit('add', $event)"
-                    />
+                    <div>
+                        <BlockNode
+                            v-for="child in items"
+                            :key="child.id"
+                            :node="child"
+                            :depth="depth + 1"
+                            :block-types="blockTypes"
+                            :selected-id="selectedId"
+                            @select="$emit('select', $event)"
+                            @remove="$emit('remove', $event)"
+                            @duplicate="$emit('duplicate', $event)"
+                            @add="$emit('add', $event)"
+                        />
+                    </div>
                 </template>
             </SortableList>
 
