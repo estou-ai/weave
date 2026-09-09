@@ -1,0 +1,37 @@
+{
+    "name": "estouai/weave",
+    "autoload": {
+        "psr-4": {
+            "Estouai\\Weave\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Estouai\\Weave\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "statamic/cms": "^6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.8"
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true
+        }
+    },
+    "extra": {
+        "statamic": {
+            "name": "Weave",
+            "description": "Weave addon"
+        },
+        "laravel": {
+            "providers": [
+                "Estouai\\Weave\\ServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

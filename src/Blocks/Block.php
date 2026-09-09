@@ -1,0 +1,135 @@
+<?php
+
+namespace Estouai\Weave\Blocks;
+
+abstract class Block
+{
+    abstract public function type(): string;
+
+    abstract public function label(): string;
+
+    abstract public function category(): string;
+
+    abstract public function propsSchema(): array;
+
+    abstract public function view(): string;
+
+    public function icon(): string
+    {
+        return 'puzzle-piece';
+    }
+
+    public function allowsChildren(): bool
+    {
+        return false;
+    }
+
+    public function defaultProps(): array
+    {
+        return [];
+    }
+
+    // Style-field handles a block doesn't want in its props panel — e.g.
+    // TYPOGRAPHY_FIELDS for a block with no text of its own to style. Override
+    // per-block.
+    public function excludedStyleFields(): array
+    {
+        return [];
+    }
+
+    public const TYPOGRAPHY_FIELDS = ['text_color', 'background_color', 'font_size', 'font_family', 'font_weight'];
+
+    // ponytail: border/shadow/typography-family/responsive are a documented v2 — add a row here
+    // + a row in StyleBuilder::MAP when needed, no redesign required.
+    public static function styleSchema(): array
+    {
+        return [
+            ['handle' => 'text_color', 'field' => ['type' => 'color', 'swatches' => static::colorSwatches(), 'allow_any' => true]],
+            ['handle' => 'background_color', 'field' => ['type' => 'color', 'swatches' => static::colorSwatches(), 'allow_any' => true]],
+            ['handle' => 'font_size', 'field' => ['type' => 'range', 'min' => 0, 'max' => 96, 'step' => 1, 'append' => 'px']],
+            ['handle' => 'font_family', 'field' => ['type' => 'select', 'options' => static::fontFamilyOptions(), 'clearable' => true, 'placeholder' => 'Default']],
+            ['handle' => 'font_weight', 'field' => ['type' => 'select', 'options' => static::fontWeightOptions(), 'clearable' => true, 'placeholder' => 'Default']],
+            ['handle' => 'border_radius', 'field' => ['type' => 'range', 'display' => 'Corner Radius', 'min' => 0, 'max' => 48, 'step' => 1, 'append' => 'px']],
+            ['handle' => 'border_width', 'field' => ['type' => 'range', 'display' => 'Border Width', 'min' => 0, 'max' => 12, 'step' => 1, 'append' => 'px']],
+            ['handle' => 'border_style', 'field' => ['type' => 'select', 'display' => 'Border Style', 'options' => ['solid' => 'Solid', 'dashed' => 'Dashed', 'dotted' => 'Dotted', 'double' => 'Double'], 'clearable' => true, 'placeholder' => 'Solid']],
+            ['handle' => 'border_color', 'field' => ['type' => 'color', 'display' => 'Border Color', 'swatches' => static::colorSwatches(), 'allow_any' => true]],
+            ['handle' => 'shadow', 'field' => ['type' => 'select', 'display' => 'Shadow', 'options' => static::shadowOptions(), 'clearable' => true, 'placeholder' => 'None']],
+            ['handle' => 'margin_top', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'top', 'append' => 'px']],
+            ['handle' => 'margin_right', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'right', 'append' => 'px']],
+            ['handle' => 'margin_bottom', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'bottom', 'append' => 'px']],
+            ['handle' => 'margin_left', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'left', 'append' => 'px']],
+            ['handle' => 'padding_top', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'top', 'append' => 'px']],
+            ['handle' => 'padding_right', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'right', 'append' => 'px']],
+            ['handle' => 'padding_bottom', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'bottom', 'append' => 'px']],
+            ['handle' => 'padding_left', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'left', 'append' => 'px']],
+            ['handle' => 'animation', 'field' => ['type' => 'select', 'display' => 'Animation', 'options' => static::animationOptions(), 'clearable' => true, 'placeholder' => 'None']],
+            ['handle' => 'animation_duration', 'field' => ['type' => 'range', 'display' => 'Animation Duration', 'min' => 200, 'max' => 2000, 'step' => 100, 'default' => 600, 'append' => 'ms']],
+            ['handle' => 'animation_delay', 'field' => ['type' => 'range', 'display' => 'Animation Delay', 'min' => 0, 'max' => 2000, 'step' => 100, 'append' => 'ms']],
+            ['handle' => 'hide_mobile', 'field' => ['type' => 'toggle', 'display' => 'Hide on Mobile', 'instructions' => 'Below 768px.']],
+            ['handle' => 'hide_tablet', 'field' => ['type' => 'toggle', 'display' => 'Hide on Tablet', 'instructions' => '768px–1023px.']],
+            ['handle' => 'hide_desktop', 'field' => ['type' => 'toggle', 'display' => 'Hide on Desktop', 'instructions' => '1024px and up.']],
+        ];
+    }
+
+    protected static function colorSwatches(): array
+    {
+        return ['#013983', '#5a84d8', '#1ed699', '#303030', '#f8f9f8', '#acc7ff', '#eaf1ff', '#f2f2f2', '#ffffff'];
+    }
+
+    // ponytail: values are raw CSS (var(...) / weight numbers) consumed as-is by
+    // StyleBuilder — no separate lookup table to keep in sync.
+    protected static function fontFamilyOptions(): array
+    {
+        return [
+            'var(--font-display)' => 'Forum (Display)',
+            'var(--font-sans)' => 'Montserrat (Sans)',
+            'var(--font-caption)' => 'Geist (Caption)',
+        ];
+    }
+
+    protected static function fontWeightOptions(): array
+    {
+        return [
+            '400' => 'Normal',
+            '500' => 'Medium',
+            '600' => 'Semibold',
+            '700' => 'Bold',
+        ];
+    }
+
+    // Keys match StyleBuilder::SHADOWS / lib/style.js SHADOWS — the actual
+    // box-shadow CSS lives there, not here (this is display labels only).
+    protected static function shadowOptions(): array
+    {
+        return [
+            'sm' => 'Small',
+            'md' => 'Medium',
+            'lg' => 'Large',
+            'xl' => 'Extra Large',
+        ];
+    }
+
+    // Keys match Support/AnimationBuilder::TRANSFORMS — same "labels here, CSS
+    // there" split as shadowOptions() above.
+    protected static function animationOptions(): array
+    {
+        return [
+            'fade-in' => 'Fade In',
+            'fade-up' => 'Fade In Up',
+            'fade-down' => 'Fade In Down',
+            'fade-left' => 'Fade In Left',
+            'fade-right' => 'Fade In Right',
+            'zoom-in' => 'Zoom In',
+        ];
+    }
+
+    public function finalPropsSchema(): array
+    {
+        $styles = array_filter(
+            static::styleSchema(),
+            fn (array $field) => ! in_array($field['handle'], $this->excludedStyleFields(), true)
+        );
+
+        return array_merge($this->propsSchema(), array_values($styles));
+    }
+}
