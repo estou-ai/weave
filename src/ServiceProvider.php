@@ -10,6 +10,7 @@ use Estouai\Weave\Blocks\{
 };
 use Illuminate\Support\Facades\Blade;
 use Statamic\Providers\AddonServiceProvider;
+use Statamic\Statamic;
 
 class ServiceProvider extends AddonServiceProvider
 {
@@ -20,6 +21,24 @@ class ServiceProvider extends AddonServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/weave.php', 'weave');
+    }
+
+    // Parent's version only republishes the `weave` tag (compiled JS/CSS —
+    // see registerVite()'s $this->publishes() call), not `weave-config` — so
+    // a fresh `statamic:install` would merge config defaults but never drop
+    // config/weave.php into the host app. Composer update on an *existing*
+    // install doesn't go through statamic:install at all — see README's
+    // "Publishing on update" for the host-side composer script that covers
+    // that case (this hook can't reach it: Composer only runs scripts
+    // declared in the root project, never a dependency's own).
+    protected function bootPublishAfterInstall()
+    {
+        Statamic::afterInstalled(function ($command) {
+            $command->call('vendor:publish', ['--tag' => 'weave', '--force' => true]);
+            $command->call('vendor:publish', ['--tag' => 'weave-config', '--force' => true]);
+        });
+
+        return $this;
     }
 
     public function bootAddon()

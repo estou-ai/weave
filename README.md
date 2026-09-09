@@ -195,6 +195,25 @@ this fails `npm run build` inside the addon with
 `Cannot find package '@vitejs/plugin-vue'`, not anything more obviously
 addon-related.
 
+### Publishing on install/update
+
+`statamic:install` auto-publishes the addon's config (`config/weave.php`)
+and compiled assets (`public/vendor/weave/build/...`) into the host app —
+see `ServiceProvider::bootPublishAfterInstall()`. That hook only fires on
+that command though, so a plain `composer update estouai/weave` on an
+*existing* install leaves both stale (assets in particular: the CP loads
+compiled JS from the host's own `public/vendor/weave/`, not from the
+package directly). Add this to the host project's own `composer.json` so
+every install/update republishes both, `--force`d over whatever's already
+there:
+
+```json
+"scripts": {
+    "post-install-cmd": ["@php artisan vendor:publish --tag=weave --tag=weave-config --force"],
+    "post-update-cmd": ["@php artisan vendor:publish --tag=weave --tag=weave-config --force"]
+}
+```
+
 ### Project-specific setup (do this on every new install)
 
 The CP canvas preview (`resources/views/preview.blade.php`) renders blocks
