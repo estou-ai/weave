@@ -50,93 +50,53 @@
             </div>
         </div>
 
-        <SortableList
-            :model-value="blocks"
-            vertical
-            :animate="false"
-            item-class="sortable-item"
-            handle-class="sortable-handle"
-            @update:model-value="reorder"
-        >
-            <template #default="{ items }">
-                <div v-show="items.length" class="mb-3 overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
-                    <button
-                        type="button"
-                        class="flex w-full items-center gap-2 bg-gray-50 px-3 py-2 text-left text-sm font-semibold text-gray-700 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-800"
-                        @click="sectionsCollapsed = !sectionsCollapsed"
-                    >
-                        <Icon :name="sectionsCollapsed ? 'chevron-right' : 'chevron-down'" class="size-4 text-gray-400" />
-                        Sections
-                    </button>
+        <div v-show="blocks.length" class="mb-3">
+            <button
+                type="button"
+                class="mb-1 flex w-full items-center gap-1 px-1 text-xs font-semibold uppercase text-gray-500 dark:text-gray-400"
+                @click="sectionsCollapsed = !sectionsCollapsed"
+            >
+                <Icon :name="sectionsCollapsed ? 'chevron-right' : 'chevron-down'" class="size-3" />
+                List view
+            </button>
 
-                <CardList v-if="!sectionsCollapsed">
-                    <CardListItem
-                        v-for="node in items"
-                        :key="node.id"
-                        class="sortable-item"
-                        @dragenter.prevent
-                        @dragover.prevent="onDragOver($event, node.id)"
-                        @drop.prevent="onDrop(node.id)"
-                    >
-                        <div class="w-full">
-                            <div
-                                v-show="dragType && dropTarget === node.id && dropPosition === 'before'"
-                                class="mb-1 h-0.5 rounded bg-sky-500"
+            <SortableList
+                v-if="!sectionsCollapsed"
+                :model-value="blocks"
+                vertical
+                :animate="false"
+                item-class="sortable-item"
+                handle-class="sortable-handle"
+                @update:model-value="reorder"
+            >
+                <template #default="{ items }">
+                    <div>
+                        <div
+                            v-for="node in items"
+                            :key="node.id"
+                            class="sortable-item"
+                            @dragenter.prevent
+                            @dragover.prevent="onDragOver($event, node.id)"
+                            @drop.prevent="onDrop(node.id)"
+                        >
+                            <div v-show="dragType && dropTarget === node.id && dropPosition === 'before'" class="h-0.5 rounded bg-sky-500" />
+
+                            <BlockNode
+                                :node="node"
+                                :block-types="blockTypes"
+                                :selected-id="selectedId"
+                                @select="$emit('select', $event)"
+                                @remove="$emit('remove', $event)"
+                                @duplicate="$emit('duplicate', $event)"
+                                @add="openAddPicker($event)"
                             />
 
-                            <div
-                                class="flex items-center gap-2 rounded-md px-2 py-1 cursor-pointer"
-                                :class="selectedId === node.id ? 'bg-sky-50 dark:bg-gray-800' : 'hover:bg-gray-50 dark:hover:bg-gray-800'"
-                                @click="$emit('select', node.id)"
-                            >
-                                <DragHandle class="sortable-handle" @click.stop />
-                                <Button
-                                    v-if="node.children"
-                                    :icon="isCollapsed(node.id) ? 'chevron-right' : 'chevron-down'"
-                                    icon-only
-                                    size="2xs"
-                                    variant="ghost"
-                                    @click.stop="toggleCollapse(node.id)"
-                                />
-                                <Icon :name="iconFor(node.type)" class="size-4 shrink-0 text-gray-400" />
-                                <span class="flex-1 min-w-0 truncate text-sm font-medium">{{ labelFor(node.type) }}</span>
-                                <Button icon="duplicate" icon-only size="2xs" variant="ghost" @click.stop="$emit('duplicate', node.id)" />
-                                <Button icon="trash" icon-only size="2xs" variant="ghost" @click.stop="$emit('remove', node.id)" />
-                            </div>
-
-                            <div v-if="node.children && !isCollapsed(node.id)" class="ms-4 mt-1 space-y-1 rounded-md border border-gray-200 bg-gray-50 p-2 dark:border-gray-700 dark:bg-gray-800/50">
-                                <BlockNode
-                                    v-for="child in node.children"
-                                    :key="child.id"
-                                    :node="child"
-                                    :block-types="blockTypes"
-                                    :selected-id="selectedId"
-                                    @select="$emit('select', $event)"
-                                    @remove="$emit('remove', $event)"
-                                    @add="openAddPicker($event)"
-                                />
-                            </div>
-
-                            <Button
-                                v-if="node.children"
-                                text="Add block"
-                                icon="add-circle"
-                                variant="subtle"
-                                size="xs"
-                                class="ms-4 mt-1 w-[calc(100%-1rem)] justify-center"
-                                @click="addChild(node.id)"
-                            />
-
-                            <div
-                                v-show="dragType && dropTarget === node.id && dropPosition === 'after'"
-                                class="mt-1 h-0.5 rounded bg-sky-500"
-                            />
+                            <div v-show="dragType && dropTarget === node.id && dropPosition === 'after'" class="h-0.5 rounded bg-sky-500" />
                         </div>
-                    </CardListItem>
-                </CardList>
-                </div>
-            </template>
-        </SortableList>
+                    </div>
+                </template>
+            </SortableList>
+        </div>
 
         <div
             v-if="!blocks.length"
@@ -153,11 +113,11 @@
 
 <script>
 import { SortableList } from '@statamic/cms';
-import { Button, CardList, CardListItem, DragHandle, Icon } from '@statamic/cms/ui';
+import { Icon } from '@statamic/cms/ui';
 import BlockNode from './BlockNode.vue';
 
 export default {
-    components: { SortableList, Button, CardList, CardListItem, DragHandle, Icon, BlockNode },
+    components: { SortableList, Icon, BlockNode },
 
     props: {
         blocks: { type: Array, default: () => [] },
@@ -170,13 +130,12 @@ export default {
     data() {
         return {
             addingParentId: null,
-            addBlockCollapsed: false,
+            addBlockCollapsed: true,
             dragType: null,
             dropTarget: null,
             dropPosition: null,
-            collapsed: {},
             categoryCollapsed: {},
-            sectionsCollapsed: true,
+            sectionsCollapsed: false,
         };
     },
 
@@ -190,14 +149,6 @@ export default {
     },
 
     methods: {
-        labelFor(type) {
-            return this.blockTypes.find((b) => b.type === type)?.label || type;
-        },
-
-        iconFor(type) {
-            return this.blockTypes.find((b) => b.type === type)?.icon || 'puzzle-piece';
-        },
-
         reorder(items) {
             this.blocks.splice(0, this.blocks.length, ...items);
         },
@@ -208,19 +159,6 @@ export default {
 
         toggleCategory(category) {
             this.categoryCollapsed[category] = ! this.isCategoryCollapsed(category);
-        },
-
-        isCollapsed(id) {
-            return this.collapsed[id] !== false;
-        },
-
-        toggleCollapse(id) {
-            this.collapsed[id] = ! this.isCollapsed(id);
-        },
-
-        addChild(id) {
-            this.collapsed[id] = false;
-            this.openAddPicker(id);
         },
 
         toggleAddBlock() {
