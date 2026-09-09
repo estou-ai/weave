@@ -21,6 +21,14 @@ class ServiceProvider extends AddonServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/../config/weave.php', 'weave');
+
+        // Registers the `weave-config` tag bootPublishAfterInstall() calls below
+        // — without this, `vendor:publish --tag=weave-config` is a silent no-op
+        // (unregistered tag, not an error) and config/weave.php never reaches
+        // the host app.
+        $this->publishes([
+            __DIR__.'/../config/weave.php' => config_path('weave.php'),
+        ], 'weave-config');
     }
 
     // Parent's version only republishes the `weave` tag (compiled JS/CSS —

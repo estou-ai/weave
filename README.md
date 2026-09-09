@@ -63,7 +63,7 @@ block class directly:
 ```php
 namespace App\Blocks;
 
-use EstouaiWeave\Blocks\Block;
+use Estouai\Weave\Blocks\Block;
 
 class Quote extends Block
 {
@@ -91,7 +91,7 @@ class Quote extends Block
 Then register it — from any service provider's `boot()`, e.g. `AppServiceProvider`:
 
 ```php
-use EstouaiWeave\Blocks\BlockRegistry;
+use Estouai\Weave\Blocks\BlockRegistry;
 use App\Blocks\Quote;
 
 BlockRegistry::register(Quote::class);
