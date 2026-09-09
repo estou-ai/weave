@@ -18,11 +18,15 @@ class AnimationBuilder
 
     public static function isAnimated(array $props): bool
     {
-        return array_key_exists($props['animation'] ?? null, self::TRANSFORMS);
+        // `?? ''` not `?? null` — array_key_exists(null, ...) is itself a
+        // deprecated implicit-null-to-array-key coercion as of PHP 8.1, same
+        // class of bug as the one already documented in StyleBuilder::build().
+        return array_key_exists($props['animation'] ?? '', self::TRANSFORMS);
     }
 
     // CSS-transition based, not @keyframes: the element starts at this
-    // (opacity:0 + offset transform) and app.js's IntersectionObserver just
+    // (opacity:0 + offset transform) and the host app's `@alpinejs/intersect`
+    // plugin (via the `x-intersect.once` attribute nodes.blade.php emits) just
     // clears both to their normal values once the element scrolls into view —
     // the already-declared `transition` animates that change. No animation
     // library, no per-preset keyframes to maintain.
