@@ -2,3 +2,8 @@ node_modules
 vendor
 composer.lock
 .phpunit.result.cache
+
+# Written fresh by WeaveTest's setUp() (User::make()->save()) on every run —
+# not a real input fixture, just a byproduct with a random id that'd otherwise
+# diff on every test run.
+tests/__fixtures__/users/test@example.com.yaml
