@@ -203,14 +203,22 @@ see `ServiceProvider::bootPublishAfterInstall()`. That hook only fires on
 that command though, so a plain `composer update estouai/weave` on an
 *existing* install leaves both stale (assets in particular: the CP loads
 compiled JS from the host's own `public/vendor/weave/`, not from the
-package directly). Add this to the host project's own `composer.json` so
-every install/update republishes both, `--force`d over whatever's already
-there:
+package directly). Add this to the host project's own `composer.json` —
+note the `--force` split: assets are generated output, always safe to
+overwrite; config is the one file a host app is meant to customize
+(nav/footer partials, vite entries, `custom_blocks`), so it only publishes
+when missing, never clobbering an existing customized copy:
 
 ```json
 "scripts": {
-    "post-install-cmd": ["@php artisan vendor:publish --tag=weave --tag=weave-config --force"],
-    "post-update-cmd": ["@php artisan vendor:publish --tag=weave --tag=weave-config --force"]
+    "post-install-cmd": [
+        "@php artisan vendor:publish --tag=weave --force",
+        "@php artisan vendor:publish --tag=weave-config"
+    ],
+    "post-update-cmd": [
+        "@php artisan vendor:publish --tag=weave --force",
+        "@php artisan vendor:publish --tag=weave-config"
+    ]
 }
 ```
 

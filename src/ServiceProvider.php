@@ -42,8 +42,13 @@ class ServiceProvider extends AddonServiceProvider
     protected function bootPublishAfterInstall()
     {
         Statamic::afterInstalled(function ($command) {
+            // Compiled assets: always force — they're generated output, a host
+            // app has no reason to hand-edit them, and a stale copy is a real bug.
             $command->call('vendor:publish', ['--tag' => 'weave', '--force' => true]);
-            $command->call('vendor:publish', ['--tag' => 'weave-config', '--force' => true]);
+            // Config: never force — this is the one file a host app is meant to
+            // customize (nav/footer partials, vite entries, custom_blocks). Force
+            // here would silently wipe those on every reinstall.
+            $command->call('vendor:publish', ['--tag' => 'weave-config']);
         });
 
         return $this;
