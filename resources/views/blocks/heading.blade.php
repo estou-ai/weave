@@ -6,7 +6,9 @@ $align = ['left' => 'text-left', 'center' => 'text-center', 'right' => 'text-rig
 @endphp
 
 <{{ $level }}
-    class="font-display text-h3 leading-[1.05] tracking-tight text-ink {{ $align }}"
+    {{-- not-prose: a page's .prose wrapper would otherwise add its own
+         margin/font-size to this heading on top of Weave's own margin panel. --}}
+    class="not-prose font-display text-h3 leading-[1.05] tracking-tight text-ink {{ $align }}"
     data-weave-text
     @if ($textStyle = \Estouai\Weave\Support\StyleBuilder::text($props)) style="{{ $textStyle }}" @endif
     @if ($editing) contenteditable="true" data-weave-prop="text" @endif

@@ -16,7 +16,7 @@
         $inputClass = 'rounded-md border border-black/15 px-4 py-2.5 font-caption text-sm text-ink focus:border-navy focus:outline-none';
     @endphp
 
-    <div class="flex w-full flex-col gap-6">
+    <div class="not-prose flex w-full flex-col gap-6">
         @if (($props['show_title'] ?? false) && ($props['title'] ?? ''))
             <p class="font-display text-h3 leading-tight tracking-tight text-ink">{{ $props['title'] }}</p>
         @endif
