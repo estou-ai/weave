@@ -72,7 +72,7 @@ class BlockRegistryTest extends TestCase
         BlockRegistry::registerConfig('enum_quote', [
             'view' => 'blocks.quote',
             'props' => [
-                ['handle' => 'layout', 'field' => ['type' => 'select', 'options' => FakeLayout::class, 'default' => FakeLayout::Grid->value]],
+                ['handle' => 'layout', 'field' => ['type' => 'select', 'options' => FakeLayout::class, 'default' => FakeLayout::Grid]],
             ],
             'defaults' => ['layout' => FakeLayout::Grid],
         ]);
@@ -81,6 +81,7 @@ class BlockRegistryTest extends TestCase
         $layout = collect($block->finalPropsSchema())->firstWhere('handle', 'layout');
 
         $this->assertSame(['grid' => 'Grid', 'scroll' => 'Scroll'], $layout['field']['options']);
+        $this->assertSame('grid', $layout['field']['default']);
         $this->assertSame(['layout' => 'grid'], $block->finalDefaultProps());
     }
 }

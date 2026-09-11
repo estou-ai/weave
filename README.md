@@ -49,9 +49,10 @@ add there needs its own section.
 `field` (`type` plus whatever that fieldtype needs — `options` for `select`,
 `min`/`max` for `range`, etc.). For `select`, `options` may also be a PHP enum
 class string; Weave turns backed enum values (or unit enum names) into option
-keys, and uses each case's `label()` method when it exists. Whatever you list
-here is exactly what shows up, unsectioned, at the top of the block's props
-panel in the CP.
+keys, and uses each case's `label()` method when it exists. A field's
+`default` (and a block's `defaults`) may likewise be an enum case — Weave
+stores the backing value. Whatever you list here is exactly what shows up,
+unsectioned, at the top of the block's props panel in the CP.
 
 The view receives `$props` (the block's own field values) and, if
 `allows_children` is true, `$children` — render nested blocks with

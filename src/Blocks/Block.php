@@ -150,6 +150,10 @@ abstract class Block
 
     protected function normaliseField(array $field): array
     {
+        if (array_key_exists('default', $field['field'])) {
+            $field['field']['default'] = static::normaliseDefaultValue($field['field']['default']);
+        }
+
         if (($field['field']['type'] ?? null) === 'select') {
             $field['field']['options'] = static::normaliseSelectOptions(
                 $field['field']['enum'] ?? $field['field']['options'] ?? []
