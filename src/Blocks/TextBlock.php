@@ -14,7 +14,7 @@ class TextBlock extends Block
 
     public function label(): string
     {
-        return 'Text';
+        return 'Rich Text';
     }
 
     public function category(): string
