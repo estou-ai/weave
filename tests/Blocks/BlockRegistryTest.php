@@ -66,6 +66,23 @@ class BlockRegistryTest extends TestCase
         $this->assertFalse($block->allowsChildren());
         $this->assertSame([], $block->propsSchema());
     }
+
+    public function test_select_options_can_come_from_an_enum()
+    {
+        BlockRegistry::registerConfig('enum_quote', [
+            'view' => 'blocks.quote',
+            'props' => [
+                ['handle' => 'layout', 'field' => ['type' => 'select', 'options' => FakeLayout::class, 'default' => FakeLayout::Grid->value]],
+            ],
+            'defaults' => ['layout' => FakeLayout::Grid],
+        ]);
+
+        $block = BlockRegistry::find('enum_quote');
+        $layout = collect($block->finalPropsSchema())->firstWhere('handle', 'layout');
+
+        $this->assertSame(['grid' => 'Grid', 'scroll' => 'Scroll'], $layout['field']['options']);
+        $this->assertSame(['layout' => 'grid'], $block->finalDefaultProps());
+    }
 }
 
 class FakeBlock extends Block
@@ -93,5 +110,19 @@ class FakeBlock extends Block
     public function view(): string
     {
         return 'weave::blocks.fake';
+    }
+}
+
+enum FakeLayout: string
+{
+    case Grid = 'grid';
+    case Scroll = 'scroll';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::Grid => 'Grid',
+            self::Scroll => 'Scroll',
+        };
     }
 }

@@ -96,7 +96,7 @@ class Weave extends Fieldtype
                 $fields = Blueprint::make()
                     ->setContents(['fields' => $block->finalPropsSchema()])
                     ->fields()
-                    ->addValues($block->defaultProps());
+                    ->addValues($block->finalDefaultProps());
 
                 return [
                     'type' => $block->type(),

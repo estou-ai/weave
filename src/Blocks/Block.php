@@ -2,6 +2,9 @@
 
 namespace Estouai\Weave\Blocks;
 
+use BackedEnum;
+use UnitEnum;
+
 abstract class Block
 {
     abstract public function type(): string;
@@ -123,6 +126,13 @@ abstract class Block
         ];
     }
 
+    public function finalDefaultProps(): array
+    {
+        return collect($this->defaultProps())
+            ->map(fn ($value) => static::normaliseDefaultValue($value))
+            ->all();
+    }
+
     public function finalPropsSchema(): array
     {
         $styles = array_filter(
@@ -130,6 +140,65 @@ abstract class Block
             fn (array $field) => ! in_array($field['handle'], $this->excludedStyleFields(), true)
         );
 
-        return array_merge($this->propsSchema(), array_values($styles));
+        return array_merge($this->normalisePropsSchema($this->propsSchema()), array_values($styles));
+    }
+
+    protected function normalisePropsSchema(array $schema): array
+    {
+        return array_map(fn (array $field) => $this->normaliseField($field), $schema);
+    }
+
+    protected function normaliseField(array $field): array
+    {
+        if (($field['field']['type'] ?? null) === 'select') {
+            $field['field']['options'] = static::normaliseSelectOptions(
+                $field['field']['enum'] ?? $field['field']['options'] ?? []
+            );
+            unset($field['field']['enum']);
+        }
+
+        if (isset($field['field']['fields']) && is_array($field['field']['fields'])) {
+            $field['field']['fields'] = $this->normalisePropsSchema($field['field']['fields']);
+        }
+
+        if (isset($field['field']['sets']) && is_array($field['field']['sets'])) {
+            $field['field']['sets'] = array_map(function (array $set) {
+                if (isset($set['fields']) && is_array($set['fields'])) {
+                    $set['fields'] = $this->normalisePropsSchema($set['fields']);
+                }
+
+                return $set;
+            }, $field['field']['sets']);
+        }
+
+        return $field;
+    }
+
+    protected static function normaliseSelectOptions(array|string $options): array
+    {
+        if (! is_string($options)) {
+            return $options;
+        }
+
+        if (! enum_exists($options)) {
+            return [];
+        }
+
+        return collect($options::cases())
+            ->mapWithKeys(fn (UnitEnum $case) => [
+                $case instanceof BackedEnum ? $case->value : $case->name => method_exists($case, 'label') ? $case->label() : $case->name,
+            ])
+            ->all();
+    }
+
+    protected static function normaliseDefaultValue(mixed $value): mixed
+    {
+        return match (true) {
+            $value instanceof BackedEnum => $value->value,
+            $value instanceof UnitEnum => $value->name,
+            is_array($value) => array_map(fn ($item) => static::normaliseDefaultValue($item), $value),
+            default => $value,
+        };
     }
 }
+
