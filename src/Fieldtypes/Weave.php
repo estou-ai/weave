@@ -101,7 +101,8 @@ class Weave extends Fieldtype
                 return [
                     'type' => $block->type(),
                     'label' => $block->label(),
-                    'icon' => $block->icon(),
+                    'icon' => $block->iconName(),
+                    'iconSvg' => $block->iconSvg(),
                     'category' => $block->category(),
                     'allowsChildren' => $block->allowsChildren(),
                     'fields' => $fields->toPublishArray(),

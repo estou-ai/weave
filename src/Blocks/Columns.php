@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 class Columns extends Block
 {
     public function type(): string
@@ -19,9 +21,9 @@ class Columns extends Block
         return 'primitives';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon
     {
-        return 'columns';
+        return BlockIcon::Columns;
     }
 
     public function view(): string
@@ -37,9 +39,9 @@ class Columns extends Block
     public function propsSchema(): array
     {
         return [
-            ['handle' => 'preset', 'field' => ['type' => 'select', 'options' => ['50-50', '33-33-33', '66-33'], 'default' => '50-50']],
-            ['handle' => 'direction', 'field' => ['type' => 'select', 'options' => ['horizontal' => 'Horizontal', 'vertical' => 'Vertical'], 'default' => 'horizontal']],
-            ['handle' => 'gap', 'field' => ['type' => 'select', 'options' => ['sm', 'md', 'lg'], 'default' => 'md']],
+            ['handle' => 'preset', 'field' => ['type' => FieldType::Select, 'options' => ['50-50', '33-33-33', '66-33'], 'default' => '50-50']],
+            ['handle' => 'direction', 'field' => ['type' => FieldType::Select, 'options' => ['horizontal' => 'Horizontal', 'vertical' => 'Vertical'], 'default' => 'horizontal']],
+            ['handle' => 'gap', 'field' => ['type' => FieldType::Select, 'options' => ['sm', 'md', 'lg'], 'default' => 'md']],
         ];
     }
 

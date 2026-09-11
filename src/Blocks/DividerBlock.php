@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 class DividerBlock extends Block
 {
     public function type(): string
@@ -19,9 +21,9 @@ class DividerBlock extends Block
         return 'primitives';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon
     {
-        return 'hr';
+        return BlockIcon::Hr;
     }
 
     public function view(): string
@@ -32,7 +34,7 @@ class DividerBlock extends Block
     public function propsSchema(): array
     {
         return [
-            ['handle' => 'color', 'field' => ['type' => 'text', 'default' => 'border-black/10', 'instructions' => "Tailwind border color class, e.g. border-black/10"]],
+            ['handle' => 'color', 'field' => ['type' => FieldType::Text, 'default' => 'border-black/10', 'instructions' => "Tailwind border color class, e.g. border-black/10"]],
         ];
     }
 

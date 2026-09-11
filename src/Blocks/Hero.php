@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 class Hero extends Block
 {
     public function type(): string
@@ -19,9 +21,9 @@ class Hero extends Block
         return 'sections';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon
     {
-        return 'hero-image-above-text';
+        return BlockIcon::HeroImageAboveText;
     }
 
     public function view(): string
@@ -32,12 +34,12 @@ class Hero extends Block
     public function propsSchema(): array
     {
         return [
-            ['handle' => 'lines', 'field' => ['type' => 'array', 'mode' => 'list', 'display' => 'Headline lines']],
-            ['handle' => 'background', 'field' => ['type' => 'assets', 'container' => 'assets', 'max_files' => 1, 'display' => 'Background image']],
-            ['handle' => 'buttons', 'field' => ['type' => 'grid', 'display' => 'Buttons', 'fields' => [
-                ['handle' => 'label', 'field' => ['type' => 'text']],
-                ['handle' => 'href', 'field' => ['type' => 'text']],
-                ['handle' => 'variant', 'field' => ['type' => 'select', 'options' => ['dark', 'light', 'link-blue', 'link-green', 'link-sky'], 'default' => 'light']],
+            ['handle' => 'lines', 'field' => ['type' => FieldType::ArrayField, 'mode' => 'list', 'display' => 'Headline lines']],
+            ['handle' => 'background', 'field' => ['type' => FieldType::Assets, 'container' => 'assets', 'max_files' => 1, 'display' => 'Background image']],
+            ['handle' => 'buttons', 'field' => ['type' => FieldType::Grid, 'display' => 'Buttons', 'fields' => [
+                ['handle' => 'label', 'field' => ['type' => FieldType::Text]],
+                ['handle' => 'href', 'field' => ['type' => FieldType::Text]],
+                ['handle' => 'variant', 'field' => ['type' => FieldType::Select, 'options' => ['dark', 'light', 'link-blue', 'link-green', 'link-sky'], 'default' => 'light']],
             ]]],
         ];
     }

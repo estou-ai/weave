@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 class TestimonialCarousel extends Block
 {
     public function type(): string
@@ -19,9 +21,9 @@ class TestimonialCarousel extends Block
         return 'sections';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon
     {
-        return 'quote';
+        return BlockIcon::Quote;
     }
 
     public function view(): string
@@ -32,9 +34,9 @@ class TestimonialCarousel extends Block
     public function propsSchema(): array
     {
         return [
-            ['handle' => 'quotes', 'field' => ['type' => 'grid', 'display' => 'Quotes', 'fields' => [
-                ['handle' => 'quote', 'field' => ['type' => 'textarea']],
-                ['handle' => 'author', 'field' => ['type' => 'text']],
+            ['handle' => 'quotes', 'field' => ['type' => FieldType::Grid, 'display' => 'Quotes', 'fields' => [
+                ['handle' => 'quote', 'field' => ['type' => FieldType::Textarea]],
+                ['handle' => 'author', 'field' => ['type' => FieldType::Text]],
             ]]],
         ];
     }

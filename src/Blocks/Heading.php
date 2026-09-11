@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 class Heading extends Block
 {
     public function type(): string
@@ -19,9 +21,9 @@ class Heading extends Block
         return 'primitives';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon
     {
-        return 'h2';
+        return BlockIcon::H2;
     }
 
     public function view(): string
@@ -32,9 +34,9 @@ class Heading extends Block
     public function propsSchema(): array
     {
         return [
-            ['handle' => 'text', 'field' => ['type' => 'text']],
-            ['handle' => 'level', 'field' => ['type' => 'select', 'options' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], 'default' => 'h2']],
-            ['handle' => 'align', 'field' => ['type' => 'select', 'options' => ['left', 'center', 'right'], 'default' => 'left']],
+            ['handle' => 'text', 'field' => ['type' => FieldType::Text]],
+            ['handle' => 'level', 'field' => ['type' => FieldType::Select, 'options' => ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'], 'default' => 'h2']],
+            ['handle' => 'align', 'field' => ['type' => FieldType::Select, 'options' => ['left', 'center', 'right'], 'default' => 'left']],
         ];
     }
 

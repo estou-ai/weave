@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 use Statamic\Facades\Form;
 
 class FormBlock extends Block
@@ -21,9 +23,9 @@ class FormBlock extends Block
         return 'sections';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon
     {
-        return 'forms';
+        return BlockIcon::Forms;
     }
 
     public function view(): string
@@ -35,15 +37,15 @@ class FormBlock extends Block
     {
         return [
             ['handle' => 'form', 'field' => [
-                'type' => 'select',
+                'type' => FieldType::Select,
                 'display' => 'Form',
                 'options' => static::formOptions(),
                 'placeholder' => 'Select a form',
                 'instructions' => 'Which Statamic form to render — its fields and container come from that form\'s own blueprint.',
                 'validate' => ['required'],
             ]],
-            ['handle' => 'show_title', 'field' => ['type' => 'toggle', 'display' => 'Show title']],
-            ['handle' => 'title', 'field' => ['type' => 'text', 'display' => 'Title', 'instructions' => 'Shown above the form when "Show title" is on.']],
+            ['handle' => 'show_title', 'field' => ['type' => FieldType::Toggle, 'display' => 'Show title']],
+            ['handle' => 'title', 'field' => ['type' => FieldType::Text, 'display' => 'Title', 'instructions' => 'Shown above the form when "Show title" is on.']],
         ];
     }
 

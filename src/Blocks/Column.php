@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 class Column extends Block
 {
     public function type(): string
@@ -19,9 +21,9 @@ class Column extends Block
         return 'primitives';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon
     {
-        return 'container-add';
+        return BlockIcon::ContainerAdd;
     }
 
     public function view(): string
@@ -42,7 +44,7 @@ class Column extends Block
             // flexbox algorithm reserves gap space before distributing by ratio,
             // which a fixed `width:{n}%` wouldn't). Scaled 1–100 purely so sibling
             // columns that sum to 100 read as literal percentages: 50/50, 70/30.
-            ['handle' => 'width', 'field' => ['type' => 'integer', 'display' => 'Width', 'min' => 1, 'max' => 100, 'default' => 50, 'append' => '%']],
+            ['handle' => 'width', 'field' => ['type' => FieldType::Integer, 'display' => 'Width', 'min' => 1, 'max' => 100, 'default' => 50, 'append' => '%']],
         ];
     }
 

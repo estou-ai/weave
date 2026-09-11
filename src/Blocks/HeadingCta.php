@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 class HeadingCta extends Block
 {
     public function type(): string
@@ -19,9 +21,9 @@ class HeadingCta extends Block
         return 'sections';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon
     {
-        return 'align-left';
+        return BlockIcon::AlignLeft;
     }
 
     public function view(): string
@@ -32,11 +34,11 @@ class HeadingCta extends Block
     public function propsSchema(): array
     {
         return [
-            ['handle' => 'eyebrow', 'field' => ['type' => 'text']],
-            ['handle' => 'heading', 'field' => ['type' => 'text']],
-            ['handle' => 'button_label', 'field' => ['type' => 'text']],
-            ['handle' => 'button_href', 'field' => ['type' => 'text']],
-            ['handle' => 'button_variant', 'field' => ['type' => 'select', 'options' => ['dark', 'light'], 'default' => 'light']],
+            ['handle' => 'eyebrow', 'field' => ['type' => FieldType::Text]],
+            ['handle' => 'heading', 'field' => ['type' => FieldType::Text]],
+            ['handle' => 'button_label', 'field' => ['type' => FieldType::Text]],
+            ['handle' => 'button_href', 'field' => ['type' => FieldType::Text]],
+            ['handle' => 'button_variant', 'field' => ['type' => FieldType::Select, 'options' => ['dark', 'light'], 'default' => 'light']],
         ];
     }
 

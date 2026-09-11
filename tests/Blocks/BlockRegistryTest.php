@@ -4,6 +4,8 @@ namespace Estouai\Weave\Tests\Blocks;
 
 use Estouai\Weave\Blocks\Block;
 use Estouai\Weave\Blocks\BlockRegistry;
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 use Estouai\Weave\Tests\TestCase;
 
 class BlockRegistryTest extends TestCase
@@ -62,9 +64,25 @@ class BlockRegistryTest extends TestCase
 
         $this->assertSame('Bare', $block->label());
         $this->assertSame('custom', $block->category());
-        $this->assertSame('puzzle-piece', $block->icon());
+        $this->assertSame('puzzle-piece', $block->iconName());
         $this->assertFalse($block->allowsChildren());
         $this->assertSame([], $block->propsSchema());
+    }
+
+    public function test_icon_resolves_enum_names_and_custom_svgs()
+    {
+        BlockRegistry::registerConfig('icon_svg_block', [
+            'view' => 'blocks.quote',
+            'icon' => '<svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>',
+        ]);
+
+        $hero = BlockRegistry::find('hero');
+        $svg = BlockRegistry::find('icon_svg_block');
+
+        $this->assertSame('hero-image-above-text', $hero->iconName());
+        $this->assertNull($hero->iconSvg());
+        $this->assertNull($svg->iconName());
+        $this->assertStringStartsWith('<svg', $svg->iconSvg());
     }
 
     public function test_select_options_can_come_from_an_enum()
@@ -72,7 +90,7 @@ class BlockRegistryTest extends TestCase
         BlockRegistry::registerConfig('enum_quote', [
             'view' => 'blocks.quote',
             'props' => [
-                ['handle' => 'layout', 'field' => ['type' => 'select', 'options' => FakeLayout::class, 'default' => FakeLayout::Grid]],
+                ['handle' => 'layout', 'field' => ['type' => FieldType::Select, 'options' => FakeLayout::class, 'default' => FakeLayout::Grid]],
             ],
             'defaults' => ['layout' => FakeLayout::Grid],
         ]);
@@ -80,6 +98,7 @@ class BlockRegistryTest extends TestCase
         $block = BlockRegistry::find('enum_quote');
         $layout = collect($block->finalPropsSchema())->firstWhere('handle', 'layout');
 
+        $this->assertSame('select', $layout['field']['type']);
         $this->assertSame(['grid' => 'Grid', 'scroll' => 'Scroll'], $layout['field']['options']);
         $this->assertSame('grid', $layout['field']['default']);
         $this->assertSame(['layout' => 'grid'], $block->finalDefaultProps());

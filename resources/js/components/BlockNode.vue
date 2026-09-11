@@ -19,7 +19,8 @@
             />
             <span v-else class="w-4 shrink-0" />
 
-            <Icon :name="icon" class="size-3.5 shrink-0 text-gray-400" />
+            <span v-if="iconSvg" class="inline-flex size-3.5 shrink-0 items-center justify-center text-gray-400 [&_svg]:size-3.5" v-html="iconSvg" />
+            <Icon v-else :name="icon" class="size-3.5 shrink-0 text-gray-400" />
             <span class="shrink-0 text-sm font-medium">{{ label }}</span>
             <span v-if="preview" class="min-w-0 flex-1 truncate text-xs text-gray-400">{{ preview }}</span>
             <span v-else class="flex-1" />
@@ -106,6 +107,10 @@ export default {
 
         icon() {
             return this.definition?.icon || 'puzzle-piece';
+        },
+
+        iconSvg() {
+            return this.definition?.iconSvg || null;
         },
 
         // ponytail: plain-text snippet from known prop handles only, no rich

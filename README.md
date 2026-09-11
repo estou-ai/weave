@@ -47,12 +47,13 @@ add there needs its own section.
 
 `props` uses the same field format as a Statamic blueprint field: `handle` +
 `field` (`type` plus whatever that fieldtype needs — `options` for `select`,
-`min`/`max` for `range`, etc.). For `select`, `options` may also be a PHP enum
-class string; Weave turns backed enum values (or unit enum names) into option
-keys, and uses each case's `label()` method when it exists. A field's
-`default` (and a block's `defaults`) may likewise be an enum case — Weave
-stores the backing value. Whatever you list here is exactly what shows up,
-unsectioned, at the top of the block's props panel in the CP.
+`min`/`max` for `range`, etc.). `type` may be a `FieldType` enum case, an
+enum `class-string`, or a plain string. For `select`, `options` may also be a
+PHP enum class string; Weave turns backed enum values (or unit enum names)
+into option keys, and uses each case's `label()` method when it exists. A
+field's `default` (and a block's `defaults`) may likewise be an enum case —
+Weave stores the backing value. Whatever you list here is exactly what shows
+up, unsectioned, at the top of the block's props panel in the CP.
 
 The view receives `$props` (the block's own field values) and, if
 `allows_children` is true, `$children` — render nested blocks with
@@ -100,6 +101,11 @@ use App\Blocks\Quote;
 
 BlockRegistry::register(Quote::class);
 ```
+
+A class block's `icon()` returns a `BlockIcon` enum case (CP icon names the
+addon's own blocks use — plain CP icon name strings work too), or a raw
+`<svg>` string for a fully custom icon (the CP injects it as-is — only pass
+markup you trust). A `custom_blocks` entry's `icon` accepts the same values.
 
 A class block can also opt out of shared style fields that don't make sense
 for it (a `Spacer` has no text to color, a `Divider` has no font) by

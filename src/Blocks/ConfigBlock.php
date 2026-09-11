@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 // A block declared entirely from config/weave.php's `custom_blocks` array —
 // for the common case (a Blade view + a props schema, no bespoke PHP behaviour).
 // Anything that needs real logic (Columns' dynamic children, for example) still
@@ -27,7 +29,7 @@ class ConfigBlock extends Block
         return $this->config['category'] ?? 'custom';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon|string
     {
         return $this->config['icon'] ?? parent::icon();
     }

@@ -37,7 +37,8 @@
                                 @click="choose(block.type)"
                             >
                                 <span class="flex size-10 shrink-0 items-center justify-center rounded-md bg-gray-50 dark:bg-gray-800">
-                                    <Icon :name="block.icon || 'puzzle-piece'" class="size-5 text-gray-500" />
+                                    <span v-if="block.iconSvg" class="inline-flex size-5 items-center justify-center text-gray-500 [&_svg]:size-5" v-html="block.iconSvg" />
+                                    <Icon v-else :name="block.icon || 'puzzle-piece'" class="size-5 text-gray-500" />
                                 </span>
                                 <span class="line-clamp-2 text-xs font-medium">{{ block.label }}</span>
                             </button>

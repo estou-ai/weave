@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 class SpacerBlock extends Block
 {
     public function type(): string
@@ -19,9 +21,9 @@ class SpacerBlock extends Block
         return 'primitives';
     }
 
-    public function icon(): string
+    public function icon(): BlockIcon
     {
-        return 'arrows-fit-to-height';
+        return BlockIcon::ArrowsFitToHeight;
     }
 
     public function view(): string
@@ -32,7 +34,7 @@ class SpacerBlock extends Block
     public function propsSchema(): array
     {
         return [
-            ['handle' => 'height', 'field' => ['type' => 'select', 'options' => ['sm', 'md', 'lg', 'xl'], 'default' => 'md']],
+            ['handle' => 'height', 'field' => ['type' => FieldType::Select, 'options' => ['sm', 'md', 'lg', 'xl'], 'default' => 'md']],
         ];
     }
 

@@ -2,6 +2,8 @@
 
 namespace Estouai\Weave\Blocks;
 
+use Estouai\Weave\Support\BlockIcon;
+use Estouai\Weave\Support\FieldType;
 use BackedEnum;
 use UnitEnum;
 
@@ -17,9 +19,34 @@ abstract class Block
 
     abstract public function view(): string;
 
-    public function icon(): string
+    public function icon(): BlockIcon|string
     {
-        return 'puzzle-piece';
+        return BlockIcon::PuzzlePiece;
+    }
+
+    // Custom icon: override `icon()` returning a raw `<svg>` string — the CP
+    // injects it as-is, so only ever pass markup you trust.
+    public function iconName(): ?string
+    {
+        $icon = $this->icon();
+
+        if ($icon instanceof BlockIcon) {
+            return $icon->value;
+        }
+
+        return static::isSvg($icon) ? null : $icon;
+    }
+
+    public function iconSvg(): ?string
+    {
+        $icon = $this->icon();
+
+        return $icon instanceof BlockIcon || ! static::isSvg($icon) ? null : $icon;
+    }
+
+    protected static function isSvg(string $icon): bool
+    {
+        return str_starts_with(trim($icon), '<svg');
     }
 
     public function allowsChildren(): bool
@@ -47,30 +74,30 @@ abstract class Block
     public static function styleSchema(): array
     {
         return [
-            ['handle' => 'text_color', 'field' => ['type' => 'color', 'swatches' => static::colorSwatches(), 'allow_any' => true]],
-            ['handle' => 'background_color', 'field' => ['type' => 'color', 'swatches' => static::colorSwatches(), 'allow_any' => true]],
-            ['handle' => 'font_size', 'field' => ['type' => 'range', 'min' => 0, 'max' => 96, 'step' => 1, 'append' => 'px']],
-            ['handle' => 'font_family', 'field' => ['type' => 'select', 'options' => static::fontFamilyOptions(), 'clearable' => true, 'placeholder' => 'Default']],
-            ['handle' => 'font_weight', 'field' => ['type' => 'select', 'options' => static::fontWeightOptions(), 'clearable' => true, 'placeholder' => 'Default']],
-            ['handle' => 'border_radius', 'field' => ['type' => 'range', 'display' => 'Corner Radius', 'min' => 0, 'max' => 48, 'step' => 1, 'append' => 'px']],
-            ['handle' => 'border_width', 'field' => ['type' => 'range', 'display' => 'Border Width', 'min' => 0, 'max' => 12, 'step' => 1, 'append' => 'px']],
-            ['handle' => 'border_style', 'field' => ['type' => 'select', 'display' => 'Border Style', 'options' => ['solid' => 'Solid', 'dashed' => 'Dashed', 'dotted' => 'Dotted', 'double' => 'Double'], 'clearable' => true, 'placeholder' => 'Solid']],
-            ['handle' => 'border_color', 'field' => ['type' => 'color', 'display' => 'Border Color', 'swatches' => static::colorSwatches(), 'allow_any' => true]],
-            ['handle' => 'shadow', 'field' => ['type' => 'select', 'display' => 'Shadow', 'options' => static::shadowOptions(), 'clearable' => true, 'placeholder' => 'None']],
-            ['handle' => 'margin_top', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'top', 'append' => 'px']],
-            ['handle' => 'margin_right', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'right', 'append' => 'px']],
-            ['handle' => 'margin_bottom', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'bottom', 'append' => 'px']],
-            ['handle' => 'margin_left', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'left', 'append' => 'px']],
-            ['handle' => 'padding_top', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'top', 'append' => 'px']],
-            ['handle' => 'padding_right', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'right', 'append' => 'px']],
-            ['handle' => 'padding_bottom', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'bottom', 'append' => 'px']],
-            ['handle' => 'padding_left', 'field' => ['type' => 'integer', 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'left', 'append' => 'px']],
-            ['handle' => 'animation', 'field' => ['type' => 'select', 'display' => 'Animation', 'options' => static::animationOptions(), 'clearable' => true, 'placeholder' => 'None']],
-            ['handle' => 'animation_duration', 'field' => ['type' => 'range', 'display' => 'Animation Duration', 'min' => 200, 'max' => 2000, 'step' => 100, 'default' => 600, 'append' => 'ms']],
-            ['handle' => 'animation_delay', 'field' => ['type' => 'range', 'display' => 'Animation Delay', 'min' => 0, 'max' => 2000, 'step' => 100, 'append' => 'ms']],
-            ['handle' => 'hide_mobile', 'field' => ['type' => 'toggle', 'display' => 'Hide on Mobile', 'instructions' => 'Below 768px.']],
-            ['handle' => 'hide_tablet', 'field' => ['type' => 'toggle', 'display' => 'Hide on Tablet', 'instructions' => '768px–1023px.']],
-            ['handle' => 'hide_desktop', 'field' => ['type' => 'toggle', 'display' => 'Hide on Desktop', 'instructions' => '1024px and up.']],
+            ['handle' => 'text_color', 'field' => ['type' => FieldType::Color, 'swatches' => static::colorSwatches(), 'allow_any' => true]],
+            ['handle' => 'background_color', 'field' => ['type' => FieldType::Color, 'swatches' => static::colorSwatches(), 'allow_any' => true]],
+            ['handle' => 'font_size', 'field' => ['type' => FieldType::Range, 'min' => 0, 'max' => 96, 'step' => 1, 'append' => 'px']],
+            ['handle' => 'font_family', 'field' => ['type' => FieldType::Select, 'options' => static::fontFamilyOptions(), 'clearable' => true, 'placeholder' => 'Default']],
+            ['handle' => 'font_weight', 'field' => ['type' => FieldType::Select, 'options' => static::fontWeightOptions(), 'clearable' => true, 'placeholder' => 'Default']],
+            ['handle' => 'border_radius', 'field' => ['type' => FieldType::Range, 'display' => 'Corner Radius', 'min' => 0, 'max' => 48, 'step' => 1, 'append' => 'px']],
+            ['handle' => 'border_width', 'field' => ['type' => FieldType::Range, 'display' => 'Border Width', 'min' => 0, 'max' => 12, 'step' => 1, 'append' => 'px']],
+            ['handle' => 'border_style', 'field' => ['type' => FieldType::Select, 'display' => 'Border Style', 'options' => ['solid' => 'Solid', 'dashed' => 'Dashed', 'dotted' => 'Dotted', 'double' => 'Double'], 'clearable' => true, 'placeholder' => 'Solid']],
+            ['handle' => 'border_color', 'field' => ['type' => FieldType::Color, 'display' => 'Border Color', 'swatches' => static::colorSwatches(), 'allow_any' => true]],
+            ['handle' => 'shadow', 'field' => ['type' => FieldType::Select, 'display' => 'Shadow', 'options' => static::shadowOptions(), 'clearable' => true, 'placeholder' => 'None']],
+            ['handle' => 'margin_top', 'field' => ['type' => FieldType::Integer, 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'top', 'append' => 'px']],
+            ['handle' => 'margin_right', 'field' => ['type' => FieldType::Integer, 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'right', 'append' => 'px']],
+            ['handle' => 'margin_bottom', 'field' => ['type' => FieldType::Integer, 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'bottom', 'append' => 'px']],
+            ['handle' => 'margin_left', 'field' => ['type' => FieldType::Integer, 'min' => 0, 'max' => 160, 'group' => 'margin', 'side' => 'left', 'append' => 'px']],
+            ['handle' => 'padding_top', 'field' => ['type' => FieldType::Integer, 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'top', 'append' => 'px']],
+            ['handle' => 'padding_right', 'field' => ['type' => FieldType::Integer, 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'right', 'append' => 'px']],
+            ['handle' => 'padding_bottom', 'field' => ['type' => FieldType::Integer, 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'bottom', 'append' => 'px']],
+            ['handle' => 'padding_left', 'field' => ['type' => FieldType::Integer, 'min' => 0, 'max' => 96, 'group' => 'padding', 'side' => 'left', 'append' => 'px']],
+            ['handle' => 'animation', 'field' => ['type' => FieldType::Select, 'display' => 'Animation', 'options' => static::animationOptions(), 'clearable' => true, 'placeholder' => 'None']],
+            ['handle' => 'animation_duration', 'field' => ['type' => FieldType::Range, 'display' => 'Animation Duration', 'min' => 200, 'max' => 2000, 'step' => 100, 'default' => 600, 'append' => 'ms']],
+            ['handle' => 'animation_delay', 'field' => ['type' => FieldType::Range, 'display' => 'Animation Delay', 'min' => 0, 'max' => 2000, 'step' => 100, 'append' => 'ms']],
+            ['handle' => 'hide_mobile', 'field' => ['type' => FieldType::Toggle, 'display' => 'Hide on Mobile', 'instructions' => 'Below 768px.']],
+            ['handle' => 'hide_tablet', 'field' => ['type' => FieldType::Toggle, 'display' => 'Hide on Tablet', 'instructions' => '768px–1023px.']],
+            ['handle' => 'hide_desktop', 'field' => ['type' => FieldType::Toggle, 'display' => 'Hide on Desktop', 'instructions' => '1024px and up.']],
         ];
     }
 
@@ -136,7 +163,7 @@ abstract class Block
     public function finalPropsSchema(): array
     {
         $styles = array_filter(
-            static::styleSchema(),
+            $this->normalisePropsSchema(static::styleSchema()),
             fn (array $field) => ! in_array($field['handle'], $this->excludedStyleFields(), true)
         );
 
@@ -150,6 +177,10 @@ abstract class Block
 
     protected function normaliseField(array $field): array
     {
+        if (($field['field']['type'] ?? null) instanceof FieldType) {
+            $field['field']['type'] = $field['field']['type']->value;
+        }
+
         if (array_key_exists('default', $field['field'])) {
             $field['field']['default'] = static::normaliseDefaultValue($field['field']['default']);
         }
