@@ -47,13 +47,15 @@ add there needs its own section.
 
 `props` uses the same field format as a Statamic blueprint field: `handle` +
 `field` (`type` plus whatever that fieldtype needs — `options` for `select`,
-`min`/`max` for `range`, etc.). `type` may be a `FieldType` enum case, an
-enum `class-string`, or a plain string. For `select`, `options` may also be a
-PHP enum class string; Weave turns backed enum values (or unit enum names)
-into option keys, and uses each case's `label()` method when it exists. A
-field's `default` (and a block's `defaults`) may likewise be an enum case —
-Weave stores the backing value. Whatever you list here is exactly what shows
-up, unsectioned, at the top of the block's props panel in the CP.
+`min`/`max` for `range`, etc.). Shared style handles use `StyleField` enum
+cases; field `type` may be a `FieldType` enum case or a plain string. For
+`select`, `options` may also be a PHP enum class string; Weave turns backed
+enum values (or unit enum names) into option keys, and uses each case's
+`label()` method when it exists. The built-in entrance animation select uses
+the `Animation` enum. A field's `default` (and a block's `defaults`) may
+likewise be an enum case — Weave stores the backing value. Whatever you list
+here is exactly what shows up, unsectioned, at the top of the block's props
+panel in the CP.
 
 The view receives `$props` (the block's own field values) and, if
 `allows_children` is true, `$children` — render nested blocks with
@@ -112,9 +114,11 @@ for it (a `Spacer` has no text to color, a `Divider` has no font) by
 overriding `excludedStyleFields()`:
 
 ```php
+use Estouai\Weave\Support\StyleField;
+
 public function excludedStyleFields(): array
 {
-    return self::TYPOGRAPHY_FIELDS; // or list handles individually
+    return [...self::TYPOGRAPHY_FIELDS, StyleField::Animation];
 }
 ```
 

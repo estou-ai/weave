@@ -4,24 +4,12 @@ namespace Estouai\Weave\Support;
 
 class AnimationBuilder
 {
-    // Elementor's own entrance-animation names, transform-only subset (their
-    // full list also has bounce/flip/rotate/slide-in variants — add a row here
-    // if editors ask for one, no redesign needed).
-    protected const TRANSFORMS = [
-        'fade-in' => '',
-        'fade-up' => 'translateY(24px)',
-        'fade-down' => 'translateY(-24px)',
-        'fade-left' => 'translateX(24px)',
-        'fade-right' => 'translateX(-24px)',
-        'zoom-in' => 'scale(.92)',
-    ];
-
     public static function isAnimated(array $props): bool
     {
         // `?? ''` not `?? null` — array_key_exists(null, ...) is itself a
         // deprecated implicit-null-to-array-key coercion as of PHP 8.1, same
         // class of bug as the one already documented in StyleBuilder::build().
-        return array_key_exists($props['animation'] ?? '', self::TRANSFORMS);
+        return Animation::tryFrom($props['animation'] ?? '') !== null;
     }
 
     // CSS-transition based, not @keyframes: the element starts at this
@@ -44,7 +32,7 @@ class AnimationBuilder
             "transition:opacity {$duration}ms ease-out {$delay}ms, transform {$duration}ms ease-out {$delay}ms",
         ];
 
-        if ($transform = self::TRANSFORMS[$props['animation']]) {
+        if ($transform = Animation::from($props['animation'])->transform()) {
             $declarations[] = "transform:{$transform}";
         }
 

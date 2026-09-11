@@ -4,7 +4,9 @@ namespace Estouai\Weave\Tests\Blocks;
 
 use Estouai\Weave\Blocks\Block;
 use Estouai\Weave\Blocks\BlockRegistry;
+use Estouai\Weave\Support\Animation;
 use Estouai\Weave\Support\FieldType;
+use Estouai\Weave\Support\StyleField;
 use Estouai\Weave\Tests\TestCase;
 
 class BlockRegistryTest extends TestCase
@@ -97,7 +99,11 @@ class BlockRegistryTest extends TestCase
         $block = BlockRegistry::find('enum_quote');
         $layout = collect($block->finalPropsSchema())->firstWhere('handle', 'layout');
 
+        $animation = collect($block->finalPropsSchema())->firstWhere('handle', 'animation');
+
         $this->assertSame('select', $layout['field']['type']);
+        $this->assertSame('animation', $animation['handle']);
+        $this->assertSame(['fade-in' => 'Fade In', 'fade-up' => 'Fade In Up'], array_slice($animation['field']['options'], 0, 2, true));
         $this->assertSame(['grid' => 'Grid', 'scroll' => 'Scroll'], $layout['field']['options']);
         $this->assertSame('grid', $layout['field']['default']);
         $this->assertSame(['layout' => 'grid'], $block->finalDefaultProps());
