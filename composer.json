@@ -1,5 +1,6 @@
 {
     "name": "estouai/weave",
+    "license": "proprietary",
     "autoload": {
         "psr-4": {
             "Estouai\\Weave\\": "src"
@@ -14,11 +15,22 @@
         "statamic/cms": "^6.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^10.8"
+        "orchestra/testbench": "^10.8",
+        "laravel/pint": "^1.32",
+        "pestphp/pest": "^4.7",
+        "pestphp/pest-plugin-laravel": "^4.1"
+    },
+    "scripts": {
+        "pint": "pint",
+        "lint": "pint --test",
+        "format": "@pint",
+        "pest": "pest",
+        "test": "@pest"
     },
     "config": {
         "allow-plugins": {
-            "pixelfear/composer-dist-plugin": true
+            "pixelfear/composer-dist-plugin": true,
+            "pestphp/pest-plugin": true
         }
     },
     "extra": {

@@ -4,7 +4,6 @@ namespace Estouai\Weave\Tests\Blocks;
 
 use Estouai\Weave\Blocks\Block;
 use Estouai\Weave\Blocks\BlockRegistry;
-use Estouai\Weave\Support\BlockIcon;
 use Estouai\Weave\Support\FieldType;
 use Estouai\Weave\Tests\TestCase;
 

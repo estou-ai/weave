@@ -4,6 +4,7 @@ namespace Estouai\Weave\Blocks;
 
 use Estouai\Weave\Support\BlockIcon;
 use Estouai\Weave\Support\FieldType;
+
 class FeatureSplit extends Block
 {
     public function type(): string

@@ -9,6 +9,7 @@ use DOMNode;
 class RichText
 {
     protected const ALLOWED_TAGS = ['p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'sub', 'sup', 'ul', 'ol', 'li', 'blockquote', 'a', 'code', 'pre'];
+
     protected const URI_ATTRIBUTES = ['href'];
 
     public static function render(mixed $value): string
@@ -74,12 +75,14 @@ class RichText
 
                 if (in_array($tag, ['script', 'style'], true)) {
                     $child->parentNode?->removeChild($child);
+
                     continue;
                 }
 
                 if (! in_array($tag, self::ALLOWED_TAGS, true)) {
                     static::sanitizeNode($child);
                     static::unwrap($child);
+
                     continue;
                 }
 
@@ -97,6 +100,7 @@ class RichText
 
             if ($element->tagName !== 'a' || ! in_array($name, ['href', 'target', 'rel'], true)) {
                 $element->removeAttributeNode($attribute);
+
                 continue;
             }
 

@@ -2,9 +2,9 @@
 
 namespace Estouai\Weave\Blocks;
 
+use BackedEnum;
 use Estouai\Weave\Support\BlockIcon;
 use Estouai\Weave\Support\FieldType;
-use BackedEnum;
 use UnitEnum;
 
 abstract class Block
@@ -236,4 +236,3 @@ abstract class Block
         };
     }
 }
-

@@ -3,11 +3,21 @@
 namespace Estouai\Weave;
 
 use Estouai\Weave\Blocks\BlockRegistry;
-use Estouai\Weave\Blocks\{
-    Hero, FeatureSplit, TestimonialCarousel, StatGrid,
-    Heading, TextBlock, ButtonBlock, ImageBlock, DividerBlock, SpacerBlock, Columns, Column,
-    HeadingCta, ImageBanner, FormBlock,
-};
+use Estouai\Weave\Blocks\ButtonBlock;
+use Estouai\Weave\Blocks\Column;
+use Estouai\Weave\Blocks\Columns;
+use Estouai\Weave\Blocks\DividerBlock;
+use Estouai\Weave\Blocks\FeatureSplit;
+use Estouai\Weave\Blocks\FormBlock;
+use Estouai\Weave\Blocks\Heading;
+use Estouai\Weave\Blocks\HeadingCta;
+use Estouai\Weave\Blocks\Hero;
+use Estouai\Weave\Blocks\ImageBanner;
+use Estouai\Weave\Blocks\ImageBlock;
+use Estouai\Weave\Blocks\SpacerBlock;
+use Estouai\Weave\Blocks\StatGrid;
+use Estouai\Weave\Blocks\TestimonialCarousel;
+use Estouai\Weave\Blocks\TextBlock;
 use Illuminate\Support\Facades\Blade;
 use Statamic\Providers\AddonServiceProvider;
 use Statamic\Statamic;

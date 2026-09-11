@@ -3,16 +3,15 @@
 namespace Estouai\Weave\Blocks;
 
 use Estouai\Weave\Support\BlockIcon;
-use Estouai\Weave\Support\FieldType;
+use Illuminate\Support\Str;
+
 // A block declared entirely from config/weave.php's `custom_blocks` array —
 // for the common case (a Blade view + a props schema, no bespoke PHP behaviour).
 // Anything that needs real logic (Columns' dynamic children, for example) still
 // belongs in its own Block subclass instead.
 class ConfigBlock extends Block
 {
-    public function __construct(protected string $type, protected array $config)
-    {
-    }
+    public function __construct(protected string $type, protected array $config) {}
 
     public function type(): string
     {
@@ -21,7 +20,7 @@ class ConfigBlock extends Block
 
     public function label(): string
     {
-        return $this->config['label'] ?? \Illuminate\Support\Str::headline($this->type);
+        return $this->config['label'] ?? Str::headline($this->type);
     }
 
     public function category(): string
