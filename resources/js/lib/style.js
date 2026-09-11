@@ -72,16 +72,17 @@ export function buildStyle(props = {}) {
 }
 
 // Keys a live `style` patch can actually express (see Canvas.vue's structuralKey):
-// the cosmetic MAP above, plus the two props edited via contenteditable directly
-// in the iframe (heading.blade.php / text.blade.php) — those are already visually
-// correct the moment the user types them, no patch or reload needed at all.
+// the cosmetic MAP above. `text` is edited via contenteditable in the iframe
+// (heading.blade.php), so it's already visually correct the moment the user
+// types it — no patch or reload needed. Text block `content` is Bard rich text
+// now, so it must force a full server render when changed from the props panel.
 // animation/animation_duration/animation_delay contribute nothing to buildStyle
 // (entrance animations only ever apply outside the editor — see nodes.blade.php)
 // so there's genuinely nothing to patch, but they still need to be here: without
 // it, editing one falls through to Canvas.vue's "structural" bucket and forces
 // a full canvas reload for a change with zero visible effect on the canvas.
 export const PATCHABLE_KEYS = [...Object.keys(MAP), 'shadow', 'animation', 'animation_duration', 'animation_delay'];
-export const INLINE_EDITED_KEYS = ['content', 'text'];
+export const INLINE_EDITED_KEYS = ['text'];
 
 // Mirrors the `column` special case in components/nodes.blade.php: its flex-grow
 // share comes from `width`, not the generic color/margin MAP above. A live patch

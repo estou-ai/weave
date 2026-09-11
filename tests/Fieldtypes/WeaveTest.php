@@ -58,6 +58,23 @@ class WeaveTest extends TestCase
         $this->assertSame('heading', $result[0]['type']);
     }
 
+    public function test_text_block_legacy_string_roundtrips_through_bard()
+    {
+        $data = [[
+            'id' => '1',
+            'type' => 'text',
+            'props' => ['content' => 'Hello text'],
+        ]];
+
+        $preProcessed = (new Weave)->preProcess($data);
+        $processed = (new Weave)->process($preProcessed);
+        $augmented = (new Weave)->augment($processed);
+
+        $this->assertSame('paragraph', $preProcessed[0]['props']['content'][0]['type']);
+        $this->assertSame('Hello text', $processed[0]['props']['content'][0]['content'][0]['text']);
+        $this->assertSame('<p>Hello text</p>', $augmented[0]['props']['content']);
+    }
+
     public function test_augment_resolves_props_and_recurses_into_children()
     {
         $data = [

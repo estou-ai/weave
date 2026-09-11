@@ -75,8 +75,15 @@ import { SortableList } from '@statamic/cms';
 import { Button, DragHandle, Icon } from '@statamic/cms/ui';
 
 // Handles a node's props are searched, in order, for the first non-empty
-// string value to show as an inline preview next to the block's label.
+// string/rich-text value to show as an inline preview next to the block's label.
 const PREVIEW_HANDLES = ['heading', 'title', 'headline', 'text', 'content', 'quote', 'label'];
+
+function plainText(value) {
+    if (typeof value === 'string') return value.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    if (! Array.isArray(value)) return '';
+
+    return value.map((item) => plainText(item?.text || '') + ' ' + plainText(item?.content || [])).join(' ').replace(/\s+/g, ' ').trim();
+}
 
 export default {
     name: 'BlockNode',
@@ -118,10 +125,12 @@ export default {
         // from the server (see WeaveFieldtype's fetchNodeMeta), which today
         // only runs for the selected node to avoid one request per row.
         preview() {
-            const handle = PREVIEW_HANDLES.find((h) => typeof this.node.props?.[h] === 'string' && this.node.props[h].trim());
-            if (! handle) return null;
+            for (const handle of PREVIEW_HANDLES) {
+                const text = plainText(this.node.props?.[handle]);
+                if (text) return text;
+            }
 
-            return this.node.props[handle].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+            return null;
         },
     },
 

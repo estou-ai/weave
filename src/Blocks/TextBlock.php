@@ -6,7 +6,6 @@ use Estouai\Weave\Support\BlockIcon;
 use Estouai\Weave\Support\FieldType;
 class TextBlock extends Block
 {
-    // ponytail: upgrade to bard fieldtype when editors need inline formatting (bold/links).
     public function type(): string
     {
         return 'text';
@@ -35,12 +34,20 @@ class TextBlock extends Block
     public function propsSchema(): array
     {
         return [
-            ['handle' => 'content', 'field' => ['type' => FieldType::Textarea]],
+            ['handle' => 'content', 'field' => [
+                'type' => FieldType::Bard,
+                'buttons' => ['bold', 'italic', 'unorderedlist', 'orderedlist', 'anchor', 'removeformat'],
+                'toolbar_mode' => 'floating',
+                'remove_empty_nodes' => 'trim',
+            ]],
         ];
     }
 
     public function defaultProps(): array
     {
-        return ['content' => 'Text content'];
+        return ['content' => [[
+            'type' => 'paragraph',
+            'content' => [['type' => 'text', 'text' => 'Text content']],
+        ]]];
     }
 }

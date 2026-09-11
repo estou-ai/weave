@@ -9,6 +9,7 @@ enum FieldType: string
 {
     case Text = 'text';
     case Textarea = 'textarea';
+    case Bard = 'bard';
     case Integer = 'integer';
     case Select = 'select';
     case Toggle = 'toggle';
