@@ -271,3 +271,13 @@ itself for anything else. This also means entrance animations never play
 inside the CP canvas by design (`nodes.blade.php` only emits the attribute
 when `! $editing`) — the canvas re-renders on every edit, which would replay
 them constantly.
+
+## Development
+
+Inside the addon's own checkout (not the host app):
+
+```bash
+composer test    # Pest, via orchestra/testbench
+composer lint     # Pint, check only
+composer format   # Pint, auto-fix
+```
